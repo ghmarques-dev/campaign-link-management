@@ -7,7 +7,13 @@ export interface IFetchUserProjectsUseCase {
 export namespace IFetchUserProjectsUseCase {
   export type Input = {
     userId: string
+    page: number
+    pageSize: number
+    name?: string
   }
 
-  export type Output = Promise<{ projects: Project[] }>
+  export type Output = Promise<{
+    projects: Project[]
+    meta: { total: number; page: number; pageSize: number; totalPages: number }
+  }>
 }
