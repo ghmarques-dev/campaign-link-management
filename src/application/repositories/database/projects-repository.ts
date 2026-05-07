@@ -13,8 +13,8 @@ export namespace ProjectsRepository {
   }
 
   export namespace FindManyByUserId {
-    export type Input = { userId: string }
-    export type Output = Promise<Project[]>
+    export type Input = { userId: string; page: number; pageSize: number; name?: string }
+    export type Output = Promise<{ projects: Project[]; total: number }>
   }
 
   export namespace FindById {

@@ -22,8 +22,8 @@ export namespace LinksRepository {
   }
 
   export namespace FindManyByProjectId {
-    export type Input = { projectId: string }
-    export type Output = Promise<Link[]>
+    export type Input = { projectId: string; page: number; pageSize: number; name?: string }
+    export type Output = Promise<{ links: Link[]; total: number }>
   }
 
   export namespace FindById {
