@@ -17,12 +17,22 @@ export class PrismaLinksRepository implements LinksRepository {
   }
 
   async findManyByProjectId(input: LinksRepository.FindManyByProjectId.Input): LinksRepository.FindManyByProjectId.Output {
-    const links = await prisma.link.findMany({
-      where: { project_id: input.projectId },
-      orderBy: { created_at: 'desc' },
-    })
+    const where = {
+      project_id: input.projectId,
+      ...(input.name && { name: { contains: input.name, mode: 'insensitive' as const } }),
+    }
 
-    return links.map(this.toDomain)
+    const [rawLinks, total] = await prisma.$transaction([
+      prisma.link.findMany({
+        where,
+        orderBy: { created_at: 'desc' },
+        skip: (input.page - 1) * input.pageSize,
+        take: input.pageSize,
+      }),
+      prisma.link.count({ where }),
+    ])
+
+    return { links: rawLinks.map(this.toDomain), total }
   }
 
   async findById(input: LinksRepository.FindById.Input): LinksRepository.FindById.Output {

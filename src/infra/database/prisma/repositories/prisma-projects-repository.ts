@@ -15,12 +15,22 @@ export class PrismaProjectsRepository implements ProjectsRepository {
   }
 
   async findManyByUserId(input: ProjectsRepository.FindManyByUserId.Input): ProjectsRepository.FindManyByUserId.Output {
-    const projects = await prisma.project.findMany({
-      where: { user_id: input.userId },
-      orderBy: { created_at: 'desc' },
-    })
+    const where = {
+      user_id: input.userId,
+      ...(input.name && { name: { contains: input.name, mode: 'insensitive' as const } }),
+    }
 
-    return projects.map(this.toDomain)
+    const [rawProjects, total] = await prisma.$transaction([
+      prisma.project.findMany({
+        where,
+        orderBy: { created_at: 'desc' },
+        skip: (input.page - 1) * input.pageSize,
+        take: input.pageSize,
+      }),
+      prisma.project.count({ where }),
+    ])
+
+    return { projects: rawProjects.map(this.toDomain), total }
   }
 
   async findById(input: ProjectsRepository.FindById.Input): ProjectsRepository.FindById.Output {
