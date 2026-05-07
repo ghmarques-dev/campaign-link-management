@@ -9,9 +9,15 @@ export class FetchProjectLinksController {
     try {
       const { projectId } = z.object({ projectId: z.string() }).parse(req.params)
 
-      const { links } = await this.fetchProjectLinksUseCase.execute({ projectId })
+      const query = z.object({
+        page: z.coerce.number().int().positive().default(1),
+        pageSize: z.coerce.number().int().positive().max(100).default(10),
+        name: z.string().optional(),
+      }).parse(req.query)
 
-      return res.status(200).json({ links })
+      const { links, meta } = await this.fetchProjectLinksUseCase.execute({ projectId, ...query })
+
+      return res.status(200).json({ data: links, meta })
     } catch (error: any) {
       next(error)
     }
