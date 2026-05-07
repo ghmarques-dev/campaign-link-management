@@ -23,6 +23,12 @@ export class PrismaProjectsRepository implements ProjectsRepository {
     return projects.map(this.toDomain)
   }
 
+  async findById(input: ProjectsRepository.FindById.Input): ProjectsRepository.FindById.Output {
+    const project = await prisma.project.findUnique({ where: { project_id: input.projectId } })
+
+    return project ? this.toDomain(project) : null
+  }
+
   private toDomain(raw: {
     project_id: string
     name: string

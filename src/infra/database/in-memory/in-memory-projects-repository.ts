@@ -22,4 +22,8 @@ export class InMemoryProjectsRepository implements ProjectsRepository {
   async findManyByUserId(input: ProjectsRepository.FindManyByUserId.Input): ProjectsRepository.FindManyByUserId.Output {
     return this.database.filter((p) => p.userId === input.userId)
   }
+
+  async findById(input: ProjectsRepository.FindById.Input): ProjectsRepository.FindById.Output {
+    return this.database.find((p) => p.projectId === input.projectId) ?? null
+  }
 }
