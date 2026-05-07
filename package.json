@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/main/server.ts",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "seed": "tsx prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
