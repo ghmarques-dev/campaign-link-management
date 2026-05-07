@@ -3,6 +3,7 @@ import { Project } from '@/domain/entities'
 export type ProjectsRepository = {
   create(input: ProjectsRepository.Create.Input): ProjectsRepository.Create.Output
   findManyByUserId(input: ProjectsRepository.FindManyByUserId.Input): ProjectsRepository.FindManyByUserId.Output
+  findById(input: ProjectsRepository.FindById.Input): ProjectsRepository.FindById.Output
 }
 
 export namespace ProjectsRepository {
@@ -14,5 +15,10 @@ export namespace ProjectsRepository {
   export namespace FindManyByUserId {
     export type Input = { userId: string }
     export type Output = Promise<Project[]>
+  }
+
+  export namespace FindById {
+    export type Input = { projectId: string }
+    export type Output = Promise<Project | null>
   }
 }
