@@ -20,7 +20,16 @@ export class InMemoryProjectsRepository implements ProjectsRepository {
   }
 
   async findManyByUserId(input: ProjectsRepository.FindManyByUserId.Input): ProjectsRepository.FindManyByUserId.Output {
-    return this.database.filter((p) => p.userId === input.userId)
+    let results = this.database.filter((p) => p.userId === input.userId)
+
+    if (input.name) {
+      results = results.filter((p) => p.name.toLowerCase().includes(input.name!.toLowerCase()))
+    }
+
+    const total = results.length
+    const projects = results.slice((input.page - 1) * input.pageSize, input.page * input.pageSize)
+
+    return { projects, total }
   }
 
   async findById(input: ProjectsRepository.FindById.Input): ProjectsRepository.FindById.Output {

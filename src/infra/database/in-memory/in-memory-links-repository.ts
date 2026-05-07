@@ -24,7 +24,16 @@ export class InMemoryLinksRepository implements LinksRepository {
   }
 
   async findManyByProjectId(input: LinksRepository.FindManyByProjectId.Input): LinksRepository.FindManyByProjectId.Output {
-    return this.database.filter((l) => l.projectId === input.projectId)
+    let results = this.database.filter((l) => l.projectId === input.projectId)
+
+    if (input.name) {
+      results = results.filter((l) => l.name.toLowerCase().includes(input.name!.toLowerCase()))
+    }
+
+    const total = results.length
+    const links = results.slice((input.page - 1) * input.pageSize, input.page * input.pageSize)
+
+    return { links, total }
   }
 
   async findById(input: LinksRepository.FindById.Input): LinksRepository.FindById.Output {
