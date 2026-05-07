@@ -38,12 +38,12 @@ model Link {
 
   name         String
   base_url     String
-  redirect_url String
-  parameters   Json   @default("[]")
+  redirect_url String?
+  parameters   Json    @default("[]")
 
   project_id String
   project    Project @relation(fields: [project_id], references: [project_id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
